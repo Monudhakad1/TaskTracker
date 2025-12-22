@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  # Service 1: The MySQL Database
+  mysqldb:
+    image: mysql:8.0
+    container_name: task-tracker-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root        # Password for the DB
+      MYSQL_DATABASE: task_tracker_db  # The name of your DB
+    ports:
+      - "3307:3306"                    # Maps localhost:3307 to container:3306 (avoids conflict if you have local MySQL)
+    volumes:
+      - db_data:/var/lib/mysql         # Saves data so it doesn't vanish when you stop Docker
+
+  # Service 2: Your Spring Boot Application
+  task-app:
+    build: .                           # Build from the Dockerfile in current directory
+    container_name: task-tracker-app
+    ports:
+      - "8080:8080"                    # Access app at localhost:8080
+    depends_on:
+      - mysqldb                        # Tells Docker to start DB before the App
+    environment:
+      # This overrides your application.properties settings!
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/task_tracker_db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+
+volumes:
+  db_data:                             # Definition of the volume
