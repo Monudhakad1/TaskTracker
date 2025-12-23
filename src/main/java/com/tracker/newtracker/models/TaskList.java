@@ -1,15 +1,13 @@
 package com.tracker.newtracker.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+@Builder
 @Getter
 @Setter
 @NoArgsConstructor
@@ -39,6 +37,16 @@ public class TaskList {
     @Column(name="updated", nullable=false)
     private LocalDateTime updated;
 
+    public TaskList(UUID id, String title, String description, List<Task> taskList) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.taskList = taskList;
+        this.created = created;
+        this.updated = updated;
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
@@ -61,5 +69,13 @@ public class TaskList {
                 ", created=" + created +
                 ", updated=" + updated +
                 '}';
+    }
+
+    public Object getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(Object tasks) {
+        this.tasks = tasks;
     }
 }
