@@ -46,7 +46,6 @@ public class TaskList {
         this.updated = updated;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
@@ -71,11 +70,5 @@ public class TaskList {
                 '}';
     }
 
-    public Object getTasks() {
-        return tasks;
-    }
 
-    public void setTasks(Object tasks) {
-        this.tasks = tasks;
-    }
 }

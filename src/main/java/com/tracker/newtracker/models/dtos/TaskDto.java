@@ -1,4 +1,4 @@
-package com.tracker.newtracker.dtos;
+package com.tracker.newtracker.models.dtos;
 
 import com.tracker.newtracker.models.TaskPriority;
 import com.tracker.newtracker.models.TaskStatus;

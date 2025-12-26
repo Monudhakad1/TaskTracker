@@ -52,18 +52,6 @@ public class Task {
     private LocalDateTime updated;
 
 
-    public Task(UUID id, String title, String description, LocalDateTime dueDate, TaskStatus status, TaskPriority priority, TaskList taskList, LocalDateTime created, LocalDateTime updated) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.dueDate = dueDate;
-        this.status = status;
-        this.priority = priority;
-        this.taskList = taskList;
-        this.created = created;
-        this.updated = updated;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

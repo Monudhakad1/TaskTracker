@@ -1,6 +1,6 @@
 package com.tracker.newtracker.mappers.IMPL;
 
-import com.tracker.newtracker.dtos.TaskListDto;
+import com.tracker.newtracker.models.dtos.TaskListDto;
 import com.tracker.newtracker.mappers.TaskListMapper;
 import com.tracker.newtracker.mappers.TaskMapper;
 import com.tracker.newtracker.models.Task;
@@ -43,9 +43,15 @@ public class TaskListMapperImpl implements TaskListMapper {
                 taskList.getId(),
                 taskList.getTitle(),
                 taskList.getDescription(),
-                Optional.ofNullable(taskList.getTasks())
+                Optional.ofNullable(taskList.getTaskList())
                         .map(List::size)
-                        .orElse(0)
+                        .orElse(0),
+                calculateTaskListProgress(taskList.getTaskList()),
+                Optional.ofNullable(taskList.getTaskList())
+                        .map(tasks -> tasks.stream()
+                                .map(taskMapper::toDto) // Har ek Task Entity ko TaskDto mein bad
+                                .toList()) // Wapas List mein pack kiya
+                        .orElse(null) // Agar list null thi, toh null hi return karo
         );
     }
 

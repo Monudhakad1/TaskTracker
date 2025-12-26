@@ -1,6 +1,6 @@
 package com.tracker.newtracker.mappers.IMPL;
 
-import com.tracker.newtracker.dtos.TaskDto;
+import com.tracker.newtracker.models.dtos.TaskDto;
 import com.tracker.newtracker.mappers.TaskMapper;
 import com.tracker.newtracker.models.Task;
 import org.springframework.stereotype.Component;

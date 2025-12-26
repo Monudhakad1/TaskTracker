@@ -1,4 +1,4 @@
-package com.tracker.newtracker.dtos;
+package com.tracker.newtracker.models.dtos;
 
 import java.util.List;
 import java.util.UUID;

@@ -1,6 +1,6 @@
 package com.tracker.newtracker.mappers;
 
-import com.tracker.newtracker.dtos.TaskListDto;
+import com.tracker.newtracker.models.dtos.TaskListDto;
 import com.tracker.newtracker.models.TaskList;
 
 public interface TaskListMapper
