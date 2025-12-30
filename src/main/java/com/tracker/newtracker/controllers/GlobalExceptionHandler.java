@@ -12,7 +12,7 @@ public class GlobalExceptionHandler {
     // HANDLER METHOD ( LOOKS LIKE
     public ResponseEntity<ErrorResponse> handleException(
             RuntimeException ex, WebRequest request
-    ){
+    ) {
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(),
                 ex.getMessage(),
                 request.getDescription(false));

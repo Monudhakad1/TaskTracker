@@ -42,7 +42,7 @@ public class Task {
     private TaskPriority priority;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="tasklist_id", nullable = false)
+    @JoinColumn(name = "tasklist_id", nullable = false)
     private TaskList taskList;
 
     @Column(name = "created", nullable = false, updatable = false)
@@ -62,7 +62,7 @@ public class Task {
 
     @Override
     public int hashCode() {
-         return getClass().hashCode();
+        return getClass().hashCode();
     }
 
     @Override
@@ -78,4 +78,5 @@ public class Task {
                 ", updated=" + updated +
                 '}';
     }
+
 }
