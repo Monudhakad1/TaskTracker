@@ -1,31 +1,52 @@
 version: '3.8'
 
 services:
-  # Service 1: The MySQL Database
   mysqldb:
     image: mysql:8.0
     container_name: task-tracker-db
     environment:
-      MYSQL_ROOT_PASSWORD: root        # Password for the DB
-      MYSQL_DATABASE: task_tracker_db  # The name of your DB
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: task_tracker_db
     ports:
-      - "3307:3306"                    # Maps localhost:3307 to container:3306 (avoids conflict if you have local MySQL)
+      - "3307:3306"
     volumes:
-      - db_data:/var/lib/mysql         # Saves data so it doesn't vanish when you stop Docker
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-  # Service 2: Your Spring Boot Application
+  redis:
+    image: redis:7-alpine
+    container_name: task-tracker-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
   task-app:
-    build: .                           # Build from the Dockerfile in current directory
+    build: .
     container_name: task-tracker-app
     ports:
-      - "8080:8080"                    # Access app at localhost:8080
+      - "8080:8080"
     depends_on:
-      - mysqldb                        # Tells Docker to start DB before the App
+      mysqldb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     environment:
-      # This overrides your application.properties settings!
       SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/task_tracker_db
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
 
 volumes:
-  db_data:                             # Definition of the volume
+  db_data:
+  redis_data:

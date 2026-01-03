@@ -1,8 +1,11 @@
-# We use Eclipse Temurin which is the industry standard now
-FROM eclipse-temurin:17-jdk
+# Base image: Java 21
+FROM eclipse-temurin:21-jdk
 
-# Copy the jar
-COPY target/*.jar app.jar
+# Copy Spring Boot jar into container
+COPY build/libs/NewTracker-0.0.1-SNAPSHOT.jar app.jar
 
-# Run the app
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+# Document the port (optional but good practice)
+EXPOSE 8080
+# Run the application
+ENTRYPOINT ["java", "-jar", "app.jar"]
+

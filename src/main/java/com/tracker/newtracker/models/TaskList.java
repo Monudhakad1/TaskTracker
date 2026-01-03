@@ -3,6 +3,7 @@ package com.tracker.newtracker.models;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -16,7 +17,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "task_list")
-public class TaskList {
+public class TaskList implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

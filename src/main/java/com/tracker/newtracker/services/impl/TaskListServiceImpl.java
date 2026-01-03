@@ -5,6 +5,7 @@ import com.tracker.newtracker.repositories.TaskListRepository;
 import com.tracker.newtracker.services.TaskListService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -29,6 +30,7 @@ public class TaskListServiceImpl implements TaskListService {
         return taskListRepository.findAll();
     }
 
+    @Cacheable( value = "tasks", key = "#id")
     @Override
     public TaskList createTaskList(TaskList taskList) {
         if (null != taskList.getId()) {
@@ -52,6 +54,7 @@ public class TaskListServiceImpl implements TaskListService {
     }
 
     @Override
+    @Cacheable( value = "tasks", key = "#id")
     public Optional<TaskList> getTaskListById(UUID id) {
         return taskListRepository.findById(id);
     }
