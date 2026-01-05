@@ -1,374 +1,141 @@
-# NewTracker - Task Management REST API
+# NewTracker – Task Management REST API
 
-A production-ready task management backend service built with Spring Boot, JPA, and MySQL. This application provides a complete RESTful API for managing tasks and task lists with proper layered architecture, data validation, and exception handling.
-
----
-
-## 📋 Table of Contents
-- [Features](#-features)
-- [Tech Stack](#-tech-stack)
-- [Project Architecture](#-project-architecture)
-- [API Endpoints](#-api-endpoints)
-- [Getting Started](#-getting-started)
-- [Configuration](#-configuration)
-- [Next Steps](#-next-steps)
+A Spring Boot backend application for managing tasks and task lists efficiently with clean architecture and MySQL database integration.
 
 ---
 
-## ✨ Features
+## Problem Statement
 
-### Currently Implemented
-- ✅ **Complete CRUD Operations** for Tasks and Task Lists
-- ✅ **RESTful API Design** with proper HTTP methods and status codes
-- ✅ **Entity-DTO Pattern** for clean API contracts
-- ✅ **Mapper Layer** for converting between entities and DTOs
-- ✅ **Service Layer** with business logic and validation
-- ✅ **Repository Layer** with Spring Data JPA
-- ✅ **Global Exception Handling** for consistent error responses
-- ✅ **Task Progress Tracking** with automatic calculation
-- ✅ **Enum Support** for Task Priority (LOW, MEDIUM, HIGH, URGENT) and Status (OPEN, IN_PROGRESS, CLOSED)
-- ✅ **MySQL Database Integration** with JPA/Hibernate
-- ✅ **Docker Support** with docker-compose for easy deployment
-- ✅ **Redis Configuration** (prepared for caching)
-- ✅ **Spring Boot Actuator** for monitoring endpoints
+Managing tasks across different lists becomes difficult as data grows.  
+Organizing, tracking progress, and updating task statuses efficiently is a common challenge.  
+This project solves the problem by providing structured REST APIs with proper layered architecture and data validation.
 
 ---
 
-## 🛠️ Tech Stack
+## Features
 
-| Technology | Version | Purpose |
-|------------|---------|---------|
-| **Java** | 21 | Programming Language |
-| **Spring Boot** | 3.3.0 | Application Framework |
-| **Spring Data JPA** | 3.3.0 | Database Abstraction Layer |
-| **Hibernate** | 6.x | ORM Implementation |
-| **MySQL** | 8.0 | Relational Database |
-| **Redis** | Latest | Caching (configured, ready to implement) |
-| **Lombok** | 1.18.30 | Boilerplate Code Reduction |
-| **Gradle** | 8.x | Build Tool |
-| **Docker** | Latest | Containerization |
+- Create, update, and delete tasks and task lists
+- Task status tracking (OPEN, IN_PROGRESS, CLOSED)
+- Priority-based task management (LOW, MEDIUM, HIGH, URGENT)
+- Automatic progress calculation for task lists
+- Global exception handling with proper error responses
+- Docker support for easy deployment
 
 ---
 
-## 🏗️ Project Architecture
+## Tech Stack
 
-### Layered Architecture Pattern
-
-```
-┌─────────────────────────────────────────┐
-│         Controller Layer                │  ← REST API Endpoints
-│  (TaskController, TaskListController)   │
-└──────────────┬──────────────────────────┘
-               │
-┌──────────────▼──────────────────────────┐
-│          Mapper Layer                   │  ← Entity ↔ DTO Conversion
-│  (TaskMapper, TaskListMapper + Impl)    │
-└──────────────┬──────────────────────────┘
-               │
-┌──────────────▼──────────────────────────┐
-│          Service Layer                  │  ← Business Logic & Validation
-│  (TaskService, TaskListService + Impl)  │
-└──────────────┬──────────────────────────┘
-               │
-┌──────────────▼──────────────────────────┐
-│        Repository Layer                 │  ← Database Operations
-│  (TaskRepository, TaskListRepository)   │
-└──────────────┬──────────────────────────┘
-               │
-┌──────────────▼──────────────────────────┐
-│         Database (MySQL)                │  ← Data Persistence
-└─────────────────────────────────────────┘
-```
-
-### Package Structure
-
-```
-com.tracker.newtracker/
-├── controllers/              # REST Controllers
-│   ├── TaskController.java
-│   ├── TaskListController.java
-│   └── GlobalExceptionHandler.java
-│
-├── services/                 # Business Logic Interfaces
-│   ├── TaskService.java
-│   ├── TaskListService.java
-│   └── impl/                 # Service Implementations
-│       ├── taskServiceImpl.java
-│       └── TaskListServiceImpl.java
-│
-├── repositories/             # Data Access Layer
-│   ├── TaskRepository.java
-│   └── TaskListRepository.java
-│
-├── mappers/                  # Entity-DTO Mappers
-│   ├── TaskMapper.java
-│   ├── TaskListMapper.java
-│   └── IMPL/                 # Mapper Implementations
-│       ├── TaskMapperImpl.java
-│       └── TaskListMapperImpl.java
-│
-├── models/                   # Domain Entities
-│   ├── Task.java
-│   ├── TaskList.java
-│   ├── TaskPriority.java (Enum)
-│   ├── TaskStatus.java (Enum)
-│   └── dtos/                 # Data Transfer Objects
-│       ├── TaskDto.java
-│       ├── TaskListDto.java
-│       └── ErrorResponse.java
-│
-└── NewTrackerApplication.java  # Main Application Class
-```
+- Java 21
+- Spring Boot 3.3.0
+- Spring Data JPA
+- MySQL 8.0
+- Redis (configured)
+- Docker & Docker Compose
+- Gradle
 
 ---
 
-## 🔌 API Endpoints
+## Architecture Overview
 
-### Base URL
-```
-http://localhost:8080
-```
+The application follows a layered architecture:
 
-### TaskList Endpoints
-
-| Method | Endpoint | Description | Request Body | Response |
-|--------|----------|-------------|--------------|----------|
-| `GET` | `/task-lists` | Get all task lists | - | `List<TaskListDto>` |
-| `POST` | `/task-lists` | Create new task list | `TaskListDto` | `TaskListDto` |
-| `GET` | `/task-lists/{task_list_id}` | Get task list by ID | - | `TaskListDto` |
-| `PUT` | `/task-lists/{task_list_id}` | Update task list | `TaskListDto` | `TaskListDto` |
-| `DELETE` | `/task-lists/{task_list_id}` | Delete task list | - | `204 No Content` |
-
-### Task Endpoints
-
-| Method | Endpoint | Description | Request Body | Response |
-|--------|----------|-------------|--------------|----------|
-| `GET` | `/task-lists/{task_list_id}/tasks` | Get all tasks in a list | - | `List<TaskDto>` |
-| `POST` | `/task-lists/{task_list_id}/tasks` | Create new task | `TaskDto` | `TaskDto` |
-| `GET` | `/task-lists/{task_list_id}/tasks/{task_id}` | Get task by ID | - | `TaskDto` |
-| `PUT` | `/task-lists/{task_list_id}/tasks/{task_id}` | Update task | `TaskDto` | `TaskDto` |
-| `DELETE` | `/task-lists/{task_list_id}/tasks/{task_id}` | Delete task | - | `204 No Content` |
-
-### Request/Response Examples
-
-#### Create TaskList
-```json
-POST /task-lists
-{
-  "title": "Work Tasks",
-  "description": "All work-related tasks"
-}
-```
-
-#### Create Task
-```json
-POST /task-lists/{task_list_id}/tasks
-{
-  "title": "Complete API Documentation",
-  "description": "Write comprehensive API docs",
-  "status": "OPEN",
-  "priority": "HIGH",
-  "dueDate": "2025-12-31T23:59:59"
-}
-```
-
-#### Response Format
-```json
-{
-  "id": "550e8400-e29b-41d4-a716-446655440000",
-  "title": "Work Tasks",
-  "description": "All work-related tasks",
-  "count": 5,
-  "progress": 0.6,
-  "tasks": [   ]
-}
-```
-
-### Error Response Format
-```json
-{
-  "status": 400,
-  "message": "Task title cannot be null or blank",
-  "details": "uri=/task-lists/abc123/tasks"
-}
-```
+- **Controller layer** handles HTTP requests and responses
+- **Service layer** contains business logic and validation
+- **Repository layer** manages database operations with Spring Data JPA
+- **Mapper layer** converts between entities and DTOs
+- **DTOs** separate API contracts from internal database models
 
 ---
 
-## 🚀 Getting Started
+## Data Structures Used
 
-### Prerequisites
-- **JDK 21** (configured in build.gradle)
-- **MySQL 8.0+** or Docker
-- **Gradle** (wrapper included)
-- **Redis** (optional, for caching implementation)
+- **UUID** for unique entity identification
+- **Enum** for task priority and status management
+- **One-to-Many relationship** with cascade operations for task lists and tasks
+- **Bidirectional mapping** between task lists and tasks for efficient queries
 
-### Option 1: Run with Docker (Recommended)
+---
+
+## API Endpoints
+
+### Task Lists
+- `POST /task-lists` – Create task list
+- `GET /task-lists` – Get all task lists
+- `GET /task-lists/{id}` – Get task list by ID
+- `PUT /task-lists/{id}` – Update task list
+- `DELETE /task-lists/{id}` – Delete task list
+
+### Tasks
+- `POST /task-lists/{listId}/tasks` – Create task
+- `GET /task-lists/{listId}/tasks` – Get all tasks in a list
+- `GET /task-lists/{listId}/tasks/{taskId}` – Get task by ID
+- `PUT /task-lists/{listId}/tasks/{taskId}` – Update task
+- `DELETE /task-lists/{listId}/tasks/{taskId}` – Delete task
+
+---
+
+## How to Run
+
+### With Docker (Recommended)
 
 ```bash
-# Start MySQL and application together
 docker-compose up -d
-
-# Application will be available at http://localhost:8080
-# MySQL will be available at localhost:3307
 ```
 
-### Option 2: Run Locally
+Application will be available at `http://localhost:8080`
 
-1. **Setup MySQL Database**
-```sql
-CREATE DATABASE tasktracker;
-```
+### Without Docker
 
-2. **Configure Database Connection**
-Edit `src/main/resources/application.properties`:
-```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/tasktracker
-spring.datasource.username=root
-spring.datasource.password=your_password
-```
+1. Create MySQL database:
+   ```sql
+   CREATE DATABASE tasktracker;
+   ```
 
-3. **Run Application**
-```bash
-# Windows
-gradlew.bat bootRun
+2. Configure `application.properties`:
+   ```properties
+   spring.datasource.url=jdbc:mysql://localhost:3306/tasktracker
+   spring.datasource.username=root
+   spring.datasource.password=your_password
+   ```
 
-# Linux/Mac
-./gradlew bootRun
-```
-
-4. **Build JAR**
-```bash
-gradlew.bat clean build
-java -jar build/libs/NewTracker-0.0.1-SNAPSHOT.jar
-```
-
-### Testing the API
-
-```bash
-# Get all task lists
-curl http://localhost:8080/task-lists
-
-# Create a task list
-curl -X POST http://localhost:8080/task-lists \
-  -H "Content-Type: application/json" \
-  -d '{"title":"My Tasks","description":"Daily tasks"}'
-
-# Health check (Spring Actuator)
-curl http://localhost:8080/actuator/health
-```
+3. Run the application:
+   ```bash
+   ./gradlew bootRun
+   ```
 
 ---
 
-## ⚙️ Configuration
+## Database Schema
 
-### application.properties
+### task_list
+- `id` (UUID) – Primary Key
+- `title` (VARCHAR) – Task list name
+- `description` (TEXT) – Task list description
+- `created` (DATETIME) – Creation timestamp
+- `updated` (DATETIME) – Last update timestamp
 
-```properties
-# Application Name
-spring.application.name=NewTracker
-
-# Database Configuration
-spring.datasource.url=jdbc:mysql://localhost:3306/tasktracker
-spring.datasource.username=root
-spring.datasource.password=*******
-
-# JPA/Hibernate Settings
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=true
-
-# Redis Configuration (Prepared for caching)
-spring.data.redis.host=localhost
-spring.data.redis.port=6379
-```
-
-### docker-compose.yml
-- **MySQL Service**: Port 3307 (external) → 3306 (internal)
-- **Application Service**: Port 8080
-- **Persistent Volume**: Database data preserved across restarts
+### tasks
+- `id` (UUID) – Primary Key
+- `title` (VARCHAR) – Task name
+- `description` (TEXT) – Task details
+- `status` (ENUM) – OPEN, IN_PROGRESS, CLOSED
+- `priority` (ENUM) – LOW, MEDIUM, HIGH, URGENT
+- `due_date` (DATETIME) – Task deadline
+- `tasklist_id` (UUID) – Foreign Key to task_list
+- `created` (DATETIME) – Creation timestamp
+- `updated` (DATETIME) – Last update timestamp
 
 ---
 
-## 🎯 Key Implementation Details
+## Future Enhancements
 
-### Mapper Pattern
-**Purpose**: Converts between Entity objects (database) and DTO objects (API)
-
-**Why?**
-- Decouples API contract from database schema
-- Allows different representations for internal/external data
-- Prevents exposing internal entity relationships to API consumers
-
-### Service Layer
-**Purpose**: Business logic, validation, and orchestration
-
-**Features**:
-- Input validation (null checks, blank checks)
-- Default value assignment (MEDIUM priority, OPEN status)
-- Timestamp management (created, updated)
-- Exception handling with proper HTTP status codes
-
-### Repository Pattern
-**Spring Data JPA** provides automatic implementations for database operations
-
-### Global Exception Handler
-Centralized error handling for consistent API responses across all endpoints.
-
----
-
-## 📊 Database Schema
-
-### Tables
-
-#### task_list
-| Column | Type | Constraints |
-|--------|------|-------------|
-| id | UUID | PRIMARY KEY |
-| title | VARCHAR(255) | NOT NULL |
-| description | TEXT | - |
-| created | DATETIME | NOT NULL |
-| updated | DATETIME | NOT NULL |
-
-#### tasks
-| Column | Type | Constraints |
-|--------|------|-------------|
-| id | UUID | PRIMARY KEY |
-| title | VARCHAR(255) | NOT NULL |
-| description | TEXT | - |
-| due_date | DATETIME | NOT NULL |
-| status | ENUM | NOT NULL |
-| priority | ENUM | NOT NULL |
-| tasklist_id | UUID | FOREIGN KEY |
-| created | DATETIME | NOT NULL |
-| updated | DATETIME | NOT NULL |
-
-### Relationships
-- **TaskList** ↔ **Task**: One-to-Many (Cascade DELETE)
-
-## 📝 Development Notes
-
-### Project Location
-```
-E:\SpringbootProject\application\NewTracker\
-```
-
-### Build Output
-```
-build/classes/java/main/com/tracker/newtracker/
-```
-
-### Common Issues
-
-**Issue**: "Cannot resolve source sets"
-**Solution**: Ensure JDK 21 is installed and JAVA_HOME is set correctly
-
-**Issue**: Database connection error
-**Solution**: Verify MySQL is running and credentials in application.properties are correct
-
-**Issue**: Port 8080 already in use
-**Solution**: Change port in application.properties: `server.port=8081`
-
----
+- Spring Security with JWT-based authentication and authorization
+- Redis caching implementation for improved performance
+- Role-based access control (RBAC)
+- Task search and filtering capabilities
+- Task assignment and collaboration features
+- Email notifications for due dates
+- Cloud deployment on AWS/Azure
 
 
 

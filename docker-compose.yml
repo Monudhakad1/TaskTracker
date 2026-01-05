@@ -9,6 +9,8 @@ services:
       MYSQL_DATABASE: task_tracker_db
     ports:
       - "3307:3306"
+    networks:
+        - s-network
     volumes:
       - db_data:/var/lib/mysql
     healthcheck:
